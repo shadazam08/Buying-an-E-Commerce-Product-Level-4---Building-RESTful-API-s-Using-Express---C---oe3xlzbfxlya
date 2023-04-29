@@ -12,9 +12,35 @@ const products = JSON.parse(
 // Middlewares
 app.use(express.json());
 
-// Write PATCH endpoint to buy a product for the client here
-// Endpoint /api/v1/products/:id
+// PATCH endpoint for updating product data
+app.patch('/api/v1/products/:id',(req,res)=>{
+    const id = req.params.id * 1;
+    const product = products.find(product => product.id===id);
+    if (!product){
+        return res.status(404).send({
+            status: "failed",
+            message: "Product not found!"
+        })
+    }
 
+    product.quantity -= 1;
+
+    if(product.quantity>=0){
+        return res.status(200).json({
+                status : "success",
+                message :`Thank you for purchasing ${product.name}`,
+                product 
+        });
+    }
+
+    
+    return res.status(404).json({
+        status : "success",
+        message :`${product.name}, Out of stock!`,
+    });
+
+    
+});
 
 
 
